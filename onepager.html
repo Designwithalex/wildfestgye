@@ -279,21 +279,23 @@ nav.scrolled{background:rgba(7,16,31,.9);backdrop-filter:blur(16px);box-shadow:0
 .soc-btn:hover{border-color:var(--cyan);background:rgba(28,212,224,.08);}
 .soc-btn svg{width:13px;height:13px;fill:var(--wh);flex-shrink:0;}
 
-/* ── PDF BUTTON ──────────────────────── */
-.nav-pdf-btn{
-  display:flex;align-items:center;gap:.4rem;
+/* ── FLOATING DOWNLOAD BUTTON ──────────────────────── */
+.fab-download{
+  position:fixed;bottom:1.8rem;right:1.8rem;z-index:999;
+  display:flex;align-items:center;gap:.5rem;
   background:var(--cyan);color:#060d1c;
-  border:none;border-radius:100px;
-  padding:.45rem 1rem;
+  text-decoration:none;
+  border-radius:100px;
+  padding:.7rem 1.3rem;
   font-family:'Montserrat',sans-serif;
-  font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
-  cursor:pointer;
-  transition:transform .2s,box-shadow .2s,background .2s;
+  font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 4px 20px rgba(28,212,224,.35);
+  transition:transform .2s,box-shadow .2s;
   white-space:nowrap;
 }
-.nav-pdf-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(28,212,224,.4);}
-.nav-pdf-btn svg{width:14px;height:14px;fill:#060d1c;flex-shrink:0;}
-@media(max-width:768px){.nav-pdf-btn span{display:none;}}
+.fab-download:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(28,212,224,.55);}
+.fab-download svg{width:16px;height:16px;fill:#060d1c;flex-shrink:0;}
+@media(max-width:768px){.fab-download span{display:none;}.fab-download{padding:.75rem;}}
 
 /* ── ESCUDO NAV ──────────────────────── */
 .nav-escudo{
@@ -423,10 +425,6 @@ nav.scrolled{background:rgba(7,16,31,.9);backdrop-filter:blur(16px);box-shadow:0
       <a href="#marcas">Marcas</a>
       <a href="#sponsorship">Sponsorship</a>
       <a href="#contacto">Contacto</a>
-      <a class="nav-pdf-btn" href="dossier-web.pdf" download>
-        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zm-8 11v-2h2v2h-2zm-4 0v-2h2v2H7zm8 0v-2h2v2h-2z"/><path d="M5 20h14v2H5z"/></svg>
-        Descargar dossier
-      </a>
     </div>
     <div class="nav-escudo-wrap">
       <img src="escudo.png" class="nav-escudo" alt="GEBA Rugby">
@@ -801,6 +799,12 @@ const cio = new IntersectionObserver(es => es.forEach(e => {
 }), {threshold:.6});
 document.querySelectorAll('.count').forEach(el => cio.observe(el));
 </script>
+
+<!-- FLOATING DOWNLOAD BUTTON -->
+<a class="fab-download" href="dossier-web.pdf" download>
+  <svg viewBox="0 0 24 24"><path d="M5 20h14v2H5zm7-2L5.33 11h4.34V3h4.66v8h4.34L12 18z"/></svg>
+  <span>Descargar dossier</span>
+</a>
 
 </body>
 </html>

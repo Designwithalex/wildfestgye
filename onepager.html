@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wild Fest · GEBA Rugby</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,800;1,900&display=swap" rel="stylesheet">
+<style>
+
+/* ── TOKENS ────────────────────────────── */
+:root{
+  --bg:    #07101f;
+  --navy:  #0d1b35;
+  --card:  #0e1e38;
+  --card2: #111f3a;
+  --cyan:  #1cd4e0;
+  --gold:  #c9973a;
+  --glt:   #f0c040;
+  --wh:    #fff;
+  --muted: rgba(255,255,255,.55);
+  --border:rgba(255,255,255,.07);
+  --cborder:rgba(28,212,224,.15);
+  --r:     12px;
+  --r-sm:  8px;
+  --gap:   8px;
+}
+
+/* ── RESET ─────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--wh);overflow-x:hidden;min-height:100vh;}
+img{display:block;max-width:100%;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+
+/* ── UTILS ─────────────────────────────── */
+.cy{color:var(--cyan);}
+.go{color:var(--gold);}
+.tag{font-size:.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem;}
+.heading{font-size:clamp(.95rem,1.4vw,1.2rem);font-weight:900;text-transform:uppercase;letter-spacing:.4px;line-height:1.2;}
+.heading .cy{color:var(--cyan);}
+.body-txt{font-size:clamp(.72rem,.9vw,.82rem);color:var(--muted);line-height:1.7;}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease;}
+.rv.on{opacity:1;transform:none;}
+.rv-l{opacity:0;transform:translateX(-20px);transition:opacity .55s ease,transform .55s ease;}
+.rv-l.on{opacity:1;transform:none;}
+
+/* ── CARD BASE ─────────────────────────── */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:18px;
+  position:relative;overflow:hidden;
+  transition:border-color .3s;
+}
+.card:hover{border-color:var(--cborder);}
+.card-photo{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  opacity:.15;transition:opacity .4s;
+}
+.card:hover .card-photo{opacity:.22;}
+.card-inner{position:relative;z-index:1;}
+
+/* ── NAV ───────────────────────────────── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:999;
+  padding:.8rem 0;
+  background:transparent;
+  transition:background .4s,backdrop-filter .4s,box-shadow .4s;
+}
+nav.scrolled{background:rgba(7,16,31,.9);backdrop-filter:blur(16px);box-shadow:0 1px 0 var(--border);}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,3vw,2.5rem);}
+.nlogo{line-height:1;}
+.nlogo-la{font-size:.5rem;font-weight:700;letter-spacing:5px;color:rgba(255,255,255,.5);}
+.nlogo-w{font-size:1.25rem;font-weight:900;font-style:italic;color:var(--cyan);letter-spacing:-1px;line-height:.9;}
+.nlogo-f{font-size:.45rem;font-weight:800;letter-spacing:5px;}
+.nlinks{display:flex;gap:1.6rem;align-items:center;}
+.nlinks a{font-size:.62rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:color .2s;}
+.nlinks a:hover{color:var(--cyan);}
+.hbg{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;}
+.hbg span{width:22px;height:2px;background:var(--wh);border-radius:2px;transition:.3s;}
+.hbg.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+.hbg.open span:nth-child(2){opacity:0;}
+.hbg.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+.mmenu{display:none;position:fixed;inset:0;z-index:998;background:rgba(7,16,31,.97);backdrop-filter:blur(20px);flex-direction:column;align-items:center;justify-content:center;gap:2rem;}
+.mmenu.open{display:flex;}
+.mmenu a{font-size:1.1rem;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:var(--muted);transition:color .2s;}
+.mmenu a:hover{color:var(--cyan);}
+.msoc{display:flex;gap:.8rem;margin-top:1rem;}
+.msoc a{width:40px;height:40px;border-radius:50%;border:1px solid var(--cborder);display:grid;place-items:center;}
+.msoc svg{width:18px;height:18px;fill:var(--wh);}
+
+/* ── WRAPPER ───────────────────────────── */
+.wrap{
+  width:min(1300px,96vw);
+  margin-inline:auto;
+  padding-top:58px; /* nav height */
+}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:clamp(300px,42vh,420px);
+  border-radius:var(--r);overflow:hidden;
+  margin:var(--gap) 0;
+  display:flex;align-items:flex-end;
+  padding:clamp(1.2rem,3vw,2rem);
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:url('multitud 01.jpg') center/cover no-repeat;
+}
+.hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(110deg,rgba(7,16,31,.95) 0%,rgba(7,16,31,.7) 55%,rgba(7,16,31,.2) 100%);
+}
+.hero-content{position:relative;z-index:2;flex:1;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;font-style:italic;line-height:.85;letter-spacing:-2px;margin-bottom:.6rem;}
+.hero-title .la{font-size:clamp(.9rem,2vw,1.5rem);font-style:normal;letter-spacing:7px;display:block;color:rgba(255,255,255,.5);margin-bottom:.15rem;}
+.hero-sub{font-size:clamp(.72rem,1.2vw,.9rem);font-weight:600;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.65);border-left:3px solid var(--cyan);padding-left:.75rem;margin-bottom:1.4rem;line-height:1.6;}
+.hero-sub strong{color:var(--cyan);}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:.6rem;}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:100px;font-size:.65rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s;}
+.btn:hover{transform:translateY(-2px);}
+.btn-cy{background:var(--cyan);color:#060d1c;}
+.btn-cy:hover{box-shadow:0 6px 24px rgba(28,212,224,.4);}
+.btn-ol{background:transparent;color:var(--wh);border:1px solid rgba(255,255,255,.25);}
+.btn-ol:hover{border-color:var(--wh);}
+.btn svg{width:15px;height:15px;fill:currentColor;flex-shrink:0;}
+
+
+/* mascot + hero stats */
+.hero-right{position:absolute;right:0;bottom:0;z-index:2;display:flex;align-items:flex-end;gap:1rem;}
+.hero-mascot{height:clamp(140px,22vw,230px);width:auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,.6));animation:float 4s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hero-stats{display:flex;flex-direction:column;gap:.5rem;padding-bottom:1.4rem;padding-right:1rem;}
+.hstat{background:rgba(13,27,53,.8);backdrop-filter:blur(10px);border:1px solid rgba(28,212,224,.18);border-radius:var(--r-sm);padding:.6rem 1rem;text-align:center;min-width:90px;}
+.hstat-v{font-size:1.35rem;font-weight:900;color:var(--cyan);line-height:1;}
+.hstat-l{font-size:.52rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:.18rem;}
+
+/* ══════════════════════════════════════════
+   BENTO GRID
+══════════════════════════════════════════ */
+.bento{display:flex;flex-direction:column;gap:var(--gap);}
+
+/* ── ROW A: Qué es + Métricas ── */
+.row-a{display:grid;grid-template-columns:2fr 3fr;gap:var(--gap);}
+
+/* qué es */
+.c-quees{min-height:220px;display:flex;flex-direction:column;}
+.c-quees .card-photo{background-image:url('multitud 02.jpg');opacity:.12;}
+.quees-body{flex:1;display:flex;gap:12px;}
+.quees-txt{flex:1;display:flex;flex-direction:column;}
+.quees-img{width:36%;border-radius:var(--r-sm);overflow:hidden;}
+.quees-img img{width:100%;height:100%;object-fit:cover;}
+.badge{
+  display:inline-flex;align-items:center;gap:.5rem;margin-top:auto;
+  background:rgba(28,212,224,.08);border:1px solid rgba(28,212,224,.2);
+  border-radius:6px;padding:.45rem .8rem;
+  font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--cyan);
+}
+.badge svg{width:12px;height:12px;fill:var(--glt);}
+
+/* métricas 2×2 */
+.metrics-block{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:var(--gap);}
+.mcard{
+  background:var(--card2);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  transition:border-color .3s,transform .3s;
+}
+.mcard:hover{border-color:var(--cborder);transform:translateY(-2px);}
+.mcard-icon{margin-bottom:6px;}
+.mcard-icon svg{width:24px;height:24px;fill:var(--navy-light,#1a3a6a);margin:0 auto;}
+.mcard-val{font-size:clamp(1.5rem,3.5vw,2.2rem);font-weight:900;color:var(--cyan);line-height:1;}
+.mcard-lbl{font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:.35rem;line-height:1.3;}
+
+/* ── ROW B: Ubicación + Público + Difusión ── */
+.row-b{display:grid;grid-template-columns:1fr 1fr 2fr;gap:var(--gap);}
+
+/* ubicación */
+.c-ubi{}
+.ubi-hl{background:rgba(28,212,224,.08);border:1px solid rgba(28,212,224,.18);border-radius:6px;padding:.6rem .8rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin:10px 0;display:flex;align-items:flex-start;gap:6px;line-height:1.4;}
+.ubi-hl svg{width:14px;height:14px;fill:var(--glt);flex-shrink:0;margin-top:1px;}
+
+/* público */
+.ic-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;}
+.ic-box{width:26px;height:26px;border-radius:6px;background:rgba(28,212,224,.1);border:1px solid rgba(28,212,224,.2);display:grid;place-items:center;flex-shrink:0;}
+.ic-box svg{width:13px;height:13px;fill:var(--cyan);}
+.ic-txt{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.2px;line-height:1.35;padding-top:4px;}
+
+/* difusión */
+.c-dif{}
+.c-dif .card-photo{background-image:url('multitud 05.jpg');opacity:.14;}
+.dif-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.dstat{display:flex;flex-direction:column;align-items:flex-start;gap:4px;background:rgba(255,255,255,.04);border-radius:8px;padding:10px 12px;border:1px solid var(--border);}
+.dstat-icon{width:28px;height:28px;border-radius:50%;background:rgba(28,212,224,.1);display:grid;place-items:center;}
+.dstat-icon svg{width:13px;height:13px;fill:var(--cyan);}
+.dstat-v{font-size:clamp(.9rem,1.5vw,1.1rem);font-weight:900;color:var(--wh);line-height:1.1;margin-top:auto;}
+.dstat-l{font-size:.6rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;line-height:1.3;}
+
+/* ── ROW C: Sponsorship Tiers ── */
+.row-c{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gap);}
+
+.tier{background:var(--card);border-radius:var(--r);overflow:hidden;border:1px solid var(--border);transition:transform .3s,box-shadow .3s;}
+.tier:hover{transform:translateY(-3px);}
+.tier-hd{padding:12px 16px;display:flex;align-items:center;gap:8px;color:var(--wh);}
+.tier-hd svg{width:18px;height:18px;flex-shrink:0;}
+.tier-hd-lbl{font-size:.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;opacity:.75;}
+.tier-hd-name{font-size:.88rem;font-weight:900;text-transform:uppercase;letter-spacing:.3px;}
+.tier-bd{padding:12px 16px;background:rgba(255,255,255,.03);}
+.tier-bd li{font-size:.72rem;color:rgba(255,255,255,.7);padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:.5rem;}
+.tier-bd li:last-child{border:none;}
+.tier-bd li::before{content:'';width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+
+.t-gold{border-color:rgba(201,151,58,.35);}
+.t-gold:hover{box-shadow:0 8px 30px rgba(201,151,58,.2);}
+.t-gold .tier-hd{background:linear-gradient(120deg,#7a5018,var(--gold));}
+.t-gold .tier-hd svg{fill:var(--wh);}
+.t-gold li::before{background:var(--gold);}
+.t-navy{border-color:rgba(28,212,224,.25);}
+.t-navy:hover{box-shadow:0 8px 30px rgba(28,212,224,.18);}
+.t-navy .tier-hd{background:linear-gradient(120deg,var(--navy),#1a3a6a);}
+.t-navy .tier-hd svg{fill:var(--cyan);}
+.t-navy li::before{background:var(--cyan);}
+.t-gray .tier-hd{background:linear-gradient(120deg,#2a3a4e,#3e5068);}
+.t-gray .tier-hd svg{fill:rgba(255,255,255,.75);}
+.t-gray li::before{background:rgba(255,255,255,.35);}
+.tiers-note{display:flex;align-items:center;gap:.6rem;padding:.6rem 1rem;background:rgba(28,212,224,.05);border:1px solid rgba(28,212,224,.15);border-radius:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--cyan);}
+.tiers-note svg{width:14px;height:14px;fill:var(--cyan);}
+
+/* ── ROW D: Marcas + Por qué ── */
+.row-d{display:grid;grid-template-columns:5fr 7fr;gap:var(--gap);}
+
+/* marcas */
+.c-marcas{}
+.c-marcas .card-photo{background-image:url('multitud 04.jpg');opacity:.1;}
+.marcas-note{font-size:.65rem;color:var(--muted);font-weight:600;letter-spacing:.3px;line-height:1.6;}
+.marcas-note strong{color:rgba(255,255,255,.8);}
+.mascot-wrap{position:absolute;right:8px;bottom:0;opacity:.85;}
+.mascot-wrap img{height:clamp(65px,8vw,95px);width:auto;}
+
+/* por qué */
+.c-porque{}
+.porque-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;}
+.reason{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;transition:border-color .3s,background .3s;}
+.reason:hover{border-color:rgba(28,212,224,.25);background:rgba(28,212,224,.04);}
+.reason-num{width:24px;height:24px;border-radius:50%;background:rgba(28,212,224,.1);border:1px solid rgba(28,212,224,.25);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:900;color:var(--cyan);margin-bottom:.6rem;}
+.reason-title{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.3px;margin-bottom:.3rem;line-height:1.3;}
+.reason-txt{font-size:.65rem;color:var(--muted);line-height:1.55;}
+
+/* ── FOOTER ──────────────────────────── */
+.ftr{
+  position:relative;overflow:hidden;
+  background:var(--navy);border:1px solid var(--border);border-radius:var(--r);
+  padding:clamp(1rem,2.5vw,1.5rem) clamp(1.2rem,3vw,2rem);
+  margin-bottom:var(--gap);
+  display:grid;grid-template-columns:1fr auto 1fr auto;gap:1.5rem;align-items:center;
+}
+.ftr-photo{position:absolute;inset:0;background:url('multitud 03.jpg') center 40%/cover no-repeat;opacity:.1;}
+.ftr-brand{position:relative;z-index:1;}
+.ftr-brand-la{font-size:.48rem;font-weight:700;letter-spacing:5px;color:rgba(255,255,255,.4);}
+.ftr-brand-w{font-size:1.6rem;font-weight:900;font-style:italic;color:var(--cyan);letter-spacing:-1px;line-height:.9;}
+.ftr-brand-f{font-size:.46rem;font-weight:800;letter-spacing:5px;color:rgba(255,255,255,.7);}
+.ftr-brand-sub{font-size:.6rem;color:var(--muted);font-weight:500;margin-top:.4rem;line-height:1.5;max-width:200px;}
+.ftr-div{width:1px;height:55px;background:linear-gradient(to bottom,transparent,rgba(28,212,224,.4),transparent);position:relative;z-index:1;}
+.ftr-contact{position:relative;z-index:1;text-align:center;}
+.ftr-clabel{font-size:.58rem;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:.3rem;}
+.ftr-phone{font-size:clamp(1rem,2vw,1.4rem);font-weight:900;letter-spacing:1px;}
+.ftr-name{font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-top:.2rem;}
+.ftr-socials{position:relative;z-index:1;display:flex;flex-direction:column;gap:.45rem;}
+.soc-btn{display:flex;align-items:center;gap:.55rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:100px;padding:.45rem 1rem;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:border-color .2s,background .2s;}
+.soc-btn:hover{border-color:var(--cyan);background:rgba(28,212,224,.08);}
+.soc-btn svg{width:13px;height:13px;fill:var(--wh);flex-shrink:0;}
+
+/* ── PDF BUTTON ──────────────────────── */
+.nav-pdf-btn{
+  display:flex;align-items:center;gap:.4rem;
+  background:var(--cyan);color:#060d1c;
+  border:none;border-radius:100px;
+  padding:.45rem 1rem;
+  font-family:'Montserrat',sans-serif;
+  font-size:.62rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;
+  transition:transform .2s,box-shadow .2s,background .2s;
+  white-space:nowrap;
+}
+.nav-pdf-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(28,212,224,.4);}
+.nav-pdf-btn svg{width:14px;height:14px;fill:#060d1c;flex-shrink:0;}
+@media print{.nav-pdf-btn{display:none!important;}}
+@media(max-width:768px){.nav-pdf-btn span{display:none;}}
+
+/* ── ESCUDO NAV ──────────────────────── */
+.nav-escudo{
+  height:42px;width:auto;
+  filter:drop-shadow(0 2px 10px rgba(0,0,0,.6));
+  opacity:.92;transition:opacity .2s,transform .2s;
+}
+.nav-escudo:hover{opacity:1;transform:scale(1.06);}
+.nav-escudo-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  padding:0 1rem;border-left:1px solid rgba(255,255,255,.08);
+}
+.nav-escudo-lbl{font-size:.42rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--cyan);}
+
+/* ── ESCUDO HERO ─────────────────────── */
+.hero-escudo{
+  height:clamp(56px,7vw,80px);width:auto;
+  filter:drop-shadow(0 4px 16px rgba(0,0,0,.7));
+  opacity:.95;
+}
+
+/* ── UBICACIÓN overrides ─────────────── */
+.c-ubi .card-inner{padding:13px 15px 14px;}
+.c-ubi .tag{margin-bottom:3px;}
+.c-ubi .heading{margin-bottom:6px;}
+.c-ubi .ubi-hl{
+  font-size:.62rem;letter-spacing:.2px;
+  align-items:center;padding:.55rem .75rem;
+  margin-top:8px;line-height:1.3;
+}
+
+/* ── UBICACIÓN PHOTO ─────────────────── */
+.ubi-photo{
+  position:relative;height:130px;overflow:hidden;
+  flex-shrink:0;
+}
+.ubi-photo img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s ease;
+}
+.card:hover .ubi-photo img{transform:scale(1.04);}
+.ubi-photo::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(7,16,31,.1) 20%,rgba(14,30,56,.97) 100%);
+}
+.ubi-escudo-badge{
+  position:absolute;top:10px;right:10px;z-index:2;
+  background:rgba(7,16,31,.75);backdrop-filter:blur(10px);
+  border:1.5px solid rgba(28,212,224,.35);border-radius:50%;
+  width:48px;height:48px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ubi-escudo-badge img{height:32px;width:auto;}
+
+/* ── BRANDS BIGGER ───────────────────── */
+.brands{
+  display:flex;align-items:center;justify-content:space-around;
+  padding:14px 0;margin:12px 0;
+  gap:8px;
+}
+.brand{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:10px 14px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:10px;
+  transition:background .25s,border-color .25s,transform .25s;
+}
+.brand:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);transform:translateY(-2px);}
+.brand img{
+  max-height:46px;width:auto;object-fit:contain;
+  filter:brightness(0) invert(1);
+  opacity:.9;transition:opacity .25s;
+}
+.brand:hover img{opacity:1;}
+.brand-sep{display:none;}
+
+/* ── RESPONSIVE ──────────────────────── */
+@media(max-width:1024px){
+  .row-a{grid-template-columns:1fr;}
+  .metrics-block{grid-template-columns:repeat(4,1fr);grid-template-rows:1fr;}
+  .c-quees{min-height:auto;}
+  .quees-img{display:none;}
+  .row-b{grid-template-columns:1fr 1fr;}
+  .c-dif{grid-column:1/-1;}
+  .dif-grid{grid-template-columns:repeat(3,1fr);}
+  .hero-mascot{height:clamp(110px,18vw,180px);}
+}
+
+@media(max-width:768px){
+  .nlinks{display:none;}
+  .hbg{display:flex;}
+  .nav-escudo-wrap{display:none;}
+  .row-a,.row-b,.row-c,.row-d{grid-template-columns:1fr;}
+  .metrics-block{grid-template-columns:1fr 1fr;}
+  .dif-grid{grid-template-columns:1fr;}
+  .brands{gap:1rem;}
+  .porque-grid{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .ftr{grid-template-columns:1fr;text-align:center;}
+  .ftr-div{display:none;}
+  .ftr-contact{order:2;}
+  .ftr-socials{align-items:center;}
+  .hero-ctas .btn-ol:not(:first-child){display:none;}
+}
+
+@media(max-width:500px){
+  .hero-title{font-size:2.6rem;}
+  .metrics-block{grid-template-columns:1fr 1fr;}
+}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#" class="nlogo">
+      <div class="nlogo-la">LA</div>
+      <div class="nlogo-w">WILD</div>
+      <div class="nlogo-f">FEST</div>
+    </a>
+    <div class="nlinks">
+      <a href="#quees">El evento</a>
+      <a href="#metricas">Métricas</a>
+      <a href="#marcas">Marcas</a>
+      <a href="#sponsorship">Sponsorship</a>
+      <a href="#contacto">Contacto</a>
+      <button class="nav-pdf-btn" onclick="window.print()">
+        <svg viewBox="0 0 24 24"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        PDF
+      </button>
+    </div>
+    <div class="nav-escudo-wrap">
+      <img src="escudo.png" class="nav-escudo" alt="GEBA Rugby">
+      <span class="nav-escudo-lbl">GEBA Rugby</span>
+    </div>
+    <div class="hbg" id="hbg"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mmenu" id="mmenu">
+  <a href="#quees">El evento</a>
+  <a href="#metricas">Métricas</a>
+  <a href="#marcas">Marcas</a>
+  <a href="#sponsorship">Sponsorship</a>
+  <a href="#contacto">Contacto</a>
+  <div class="msoc">
+    <a href="https://www.instagram.com/lawild.gye/?hl=es-la" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://www.instagram.com/rugbygimnasia/?hl=es-la" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+    <a href="https://vt.tiktok.com/ZS9gj5DXN/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.67a8.18 8.18 0 004.78 1.52V6.74a4.85 4.85 0 01-1.01-.05z"/></svg></a>
+  </div>
+</div>
+
+<!-- WRAP -->
+<div class="wrap">
+
+  <!-- ═══ HERO ════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content rv-l">
+      <h1 class="hero-title">
+        <span class="la">LA</span>
+        <span class="cy">WILD</span> FEST
+      </h1>
+      <p class="hero-sub">Propuesta Comercial · El evento más convocante<br><strong>del rugby porteño</strong></p>
+      <div class="hero-ctas">
+        <a href="#sponsorship" class="btn btn-cy">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Ver Sponsorship
+        </a>
+        <a href="https://www.instagram.com/lawild.gye/?hl=es-la" target="_blank" rel="noopener" class="btn btn-ol">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          @lawild.gye
+        </a>
+        <a href="https://vt.tiktok.com/ZS9gj5DXN/" target="_blank" rel="noopener" class="btn btn-ol">
+          <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.67a8.18 8.18 0 004.78 1.52V6.74a4.85 4.85 0 01-1.01-.05z"/></svg>
+          TikTok
+        </a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stats">
+        <div class="hstat"><div class="hstat-v">1.500</div><div class="hstat-l">Asistentes</div></div>
+        <div class="hstat"><div class="hstat-v">+6</div><div class="hstat-l">Ediciones</div></div>
+        <div class="hstat"><div class="hstat-v">150K</div><div class="hstat-l">Alcance</div></div>
+      </div>
+      <img class="hero-mascot" src="mascota.png" alt="Mascota GEBA">
+    </div>
+  </section>
+
+  <!-- ═══ BENTO ════════════════════════════════════ -->
+  <div class="bento">
+
+    <!-- ROW A: Qué es + Métricas -->
+    <div class="row-a" id="quees">
+
+      <!-- Qué es -->
+      <div class="card c-quees rv-l">
+        <div class="card-photo"></div>
+        <div class="card-inner" style="display:flex;flex-direction:column;height:100%;gap:10px;">
+          <div>
+            <div class="tag">El Evento</div>
+            <div class="heading">¿Qué es <span class="cy">Wild Fest?</span></div>
+          </div>
+          <div class="quees-body">
+            <div class="quees-txt">
+              <p class="body-txt" style="margin-bottom:.6rem;">La Posta organizada por el plantel de rugby de GEBA. Nació en 2021 y combina deporte, comunidad y entretenimiento en una experiencia única al aire libre en Palermo.</p>
+              <p class="body-txt">+8 ediciones con ascensos, campeonatos y fechas especiales. Deporte y lifestyle premium en el corredor más exclusivo de CABA.</p>
+              <div class="badge" style="margin-top:.8rem;">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                +6 Ediciones desde 2021
+              </div>
+            </div>
+            <div class="quees-img">
+              <img src="multitud 02.jpg" alt="Wild Fest">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Métricas 2x2 -->
+      <div class="metrics-block rv" id="metricas">
+        <div class="mcard">
+          <div class="mcard-icon"><svg viewBox="0 0 24 24" fill="#1cd4e0"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <div class="mcard-val count" data-target="1500">0</div>
+          <div class="mcard-lbl">Asistencia<br>Máxima</div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-icon"><svg viewBox="0 0 24 24" fill="#1cd4e0"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+          <div class="mcard-val count" data-target="900">0</div>
+          <div class="mcard-lbl">Promedio<br>por Edición</div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#1cd4e0" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg></div>
+          <div class="mcard-val" style="color:var(--cyan);">~8</div>
+          <div class="mcard-lbl">Ediciones<br>desde 2021</div>
+        </div>
+        <div class="mcard">
+          <div class="mcard-icon"><svg viewBox="0 0 24 24" fill="#1cd4e0"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg></div>
+          <div class="mcard-val count" data-target="150" data-suffix="K">0</div>
+          <div class="mcard-lbl">Alcance<br>Orgánico</div>
+        </div>
+      </div>
+
+    </div><!-- /row-a -->
+
+    <!-- ROW B: Ubicación + Público + Difusión -->
+    <div class="row-b">
+
+      <!-- Ubicación -->
+      <div class="card c-ubi rv" style="transition-delay:.05s;padding:0;overflow:hidden;display:flex;flex-direction:column;">
+        <!-- Foto castillo -->
+        <div class="ubi-photo">
+          <img src="castillo.png" alt="Club GEBA"
+               onerror="this.src='multitud 03.jpg'">
+          <div class="ubi-escudo-badge">
+            <img src="escudo.png" alt="GEBA">
+          </div>
+        </div>
+        <!-- Texto -->
+        <div class="card-inner" style="flex:1;">
+          <div class="tag">Dónde</div>
+          <div class="heading"><span class="cy">Ubicación</span></div>
+          <p class="body-txt" style="margin:.5rem 0 0;">Club GEBA · Av. Lugones, Av. Figueroa Alcorta y Ombú · Palermo, CABA.</p>
+          <div class="ubi-hl" style="margin-top:.6rem;">
+            <svg viewBox="0 0 24 24"><path d="M5 3l3 18h8l3-18H5zm7 13c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm0-8c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+            Corredor más exclusivo de Bs. Aires
+          </div>
+        </div>
+      </div>
+
+      <!-- Público -->
+      <div class="card rv" style="transition-delay:.1s;">
+        <div class="card-inner">
+          <div class="tag">A quién</div>
+          <div class="heading">Público <span class="cy">Objetivo</span></div>
+          <div style="margin-top:.8rem;display:flex;flex-direction:column;gap:0;">
+            <div class="ic-row">
+              <div class="ic-box"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+              <div class="ic-txt">20 a 35 Años</div>
+            </div>
+            <div class="ic-row">
+              <div class="ic-box"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div>
+              <div class="ic-txt">Universitarios & Profesionales</div>
+            </div>
+            <div class="ic-row">
+              <div class="ic-box"><svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg></div>
+              <div class="ic-txt">NSE Medio-Alto</div>
+            </div>
+            <div class="ic-row">
+              <div class="ic-box"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+              <div class="ic-txt">Deporte & Lifestyle</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Difusión -->
+      <div class="card c-dif rv" style="transition-delay:.15s;">
+        <div class="card-photo"></div>
+        <div class="card-inner">
+          <div class="tag">Alcance</div>
+          <div class="heading">Potencial de <span class="cy">Difusión</span></div>
+          <div class="dif-grid" style="margin-top:.8rem;">
+            <div class="dstat">
+              <div class="dstat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+              <div class="dstat-v">150</div>
+              <div class="dstat-l">Jugadores<br>Activos</div>
+            </div>
+            <div class="dstat">
+              <div class="dstat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99z"/></svg></div>
+              <div class="dstat-v">+150K</div>
+              <div class="dstat-l">Alcance<br>Orgánico</div>
+            </div>
+            <div class="dstat">
+              <div class="dstat-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 3H3c-1.11 0-2 .89-2 2v12c0 1.1.89 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.11-.9-2-2-2z"/></svg></div>
+              <div class="dstat-v">Stream</div>
+              <div class="dstat-l">Contenido<br>& Redes</div>
+            </div>
+          </div>
+          <div class="badge" style="margin-top:.8rem;font-size:.62rem;">Red de difusión auténtica, directa y segmentada</div>
+        </div>
+      </div>
+
+    </div><!-- /row-b -->
+
+    <!-- ROW C: Sponsorship Tiers -->
+    <div id="sponsorship">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:var(--gap);">
+        <div>
+          <div class="tag">Propuesta Comercial</div>
+          <div class="heading" style="font-size:clamp(1rem,1.6vw,1.3rem);">Tiers de <span class="cy">Sponsorship</span></div>
+        </div>
+        <div class="tiers-note rv">
+          <svg viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+          Valores a definir en reunión
+        </div>
+      </div>
+      <div class="row-c rv">
+        <!-- Principal -->
+        <div class="tier t-gold">
+          <div class="tier-hd">
+            <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <div><div class="tier-hd-lbl">Sponsor</div><div class="tier-hd-name">Principal</div></div>
+          </div>
+          <div class="tier-bd"><ul>
+            <li>Naming del evento</li>
+            <li>Presencia física premium</li>
+            <li>Activación exclusiva en el espacio</li>
+            <li>Contenido digital con el plantel</li>
+            <li>Menciones en comunicación oficial</li>
+          </ul></div>
+        </div>
+        <!-- Oficial -->
+        <div class="tier t-navy">
+          <div class="tier-hd">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+            <div><div class="tier-hd-lbl">Sponsor</div><div class="tier-hd-name">Oficial</div></div>
+          </div>
+          <div class="tier-bd"><ul>
+            <li>Stand / presencia física</li>
+            <li>Menciones en comunicación oficial</li>
+            <li>Activación en terceros tiempos</li>
+            <li>Mención en redes sociales</li>
+          </ul></div>
+        </div>
+        <!-- Colaborador -->
+        <div class="tier t-gray">
+          <div class="tier-hd">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            <div><div class="tier-hd-lbl">Sponsor</div><div class="tier-hd-name">Colaborador</div></div>
+          </div>
+          <div class="tier-bd"><ul>
+            <li>Presencia en el evento</li>
+            <li>Producto en el espacio</li>
+            <li>Mención en redes</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW D: Marcas + Por qué -->
+    <div class="row-d" id="marcas">
+
+      <!-- Marcas -->
+      <div class="card c-marcas rv-l">
+        <div class="card-photo"></div>
+        <div class="card-inner">
+          <div class="tag">Confían en nosotros</div>
+          <div class="heading">Marcas que <span class="cy">eligieron</span> Wild Fest</div>
+          <div class="brands">
+            <div class="brand"><img src="speed.png" alt="Speed Unlimited"></div>
+            <div class="brand"><img src="hoedlmoser-white-baja-01.png" alt="Holmoser"></div>
+            <div class="brand"><img src="baly.png" alt="Baly"></div>
+          </div>
+          <p class="marcas-note"><strong>Presencia en eventos · Activaciones en terceros tiempos.</strong><br>Validación real y continuidad de marca dentro del ecosistema GEBA Rugby.</p>
+        </div>
+        <div class="mascot-wrap">
+          <img src="mascota.png" alt="Mascota">
+        </div>
+      </div>
+
+      <!-- Por qué GEBA -->
+      <div class="card rv" style="transition-delay:.1s;">
+        <div class="card-inner">
+          <div class="tag">Razones</div>
+          <div class="heading">¿Por qué <span class="cy">GEBA Rugby?</span></div>
+          <div class="porque-grid">
+            <div class="reason">
+              <div class="reason-num">1</div>
+              <div class="reason-title">Ubicación & Entorno de Élite</div>
+              <div class="reason-txt">Corredor Lugones–Figueroa Alcorta, el más exclusivo de CABA.</div>
+            </div>
+            <div class="reason">
+              <div class="reason-num">2</div>
+              <div class="reason-title">Categoría Deportiva Top</div>
+              <div class="reason-txt">Primera A de la URBA. Comunidad leal y altamente competitiva.</div>
+            </div>
+            <div class="reason">
+              <div class="reason-num">3</div>
+              <div class="reason-title">Amplificación Digital</div>
+              <div class="reason-txt">150 jugadores activos generan contenido real con audiencia joven y engaged.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /row-d -->
+
+    <!-- FOOTER -->
+    <footer class="ftr rv" id="contacto">
+      <div class="ftr-photo"></div>
+      <div class="ftr-brand">
+        <div class="ftr-brand-la">LA</div>
+        <div class="ftr-brand-w">WILD FEST</div>
+        <div class="ftr-brand-f">GEBA RUGBY</div>
+        <div class="ftr-brand-sub">Una plataforma real para conectar con un público joven, activo y de alta valor.</div>
+      </div>
+      <div class="ftr-div"></div>
+      <div class="ftr-contact">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#1cd4e0" style="margin:0 auto .4rem;display:block;"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        <div class="ftr-clabel">Contacto</div>
+        <div class="ftr-phone">11 6809 2001</div>
+        <div class="ftr-name">Juan Martín Stratiotis</div>
+      </div>
+      <div class="ftr-div"></div>
+      <div class="ftr-socials">
+        <a href="https://www.instagram.com/lawild.gye/?hl=es-la" target="_blank" rel="noopener" class="soc-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          @lawild.gye
+        </a>
+        <a href="https://www.instagram.com/rugbygimnasia/?hl=es-la" target="_blank" rel="noopener" class="soc-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          @rugbygimnasia
+        </a>
+        <a href="https://vt.tiktok.com/ZS9gj5DXN/" target="_blank" rel="noopener" class="soc-btn">
+          <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.67a8.18 8.18 0 004.78 1.52V6.74a4.85 4.85 0 01-1.01-.05z"/></svg>
+          TikTok
+        </a>
+      </div>
+    </footer>
+
+  </div><!-- /bento -->
+</div><!-- /wrap -->
+
+<script>
+// nav scroll
+const nav = document.getElementById('nav');
+addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), {passive:true});
+
+// hamburger
+const hbg = document.getElementById('hbg');
+const mm  = document.getElementById('mmenu');
+hbg.addEventListener('click', () => {
+  hbg.classList.toggle('open');
+  mm.classList.toggle('open');
+  document.body.style.overflow = mm.classList.contains('open') ? 'hidden' : '';
+});
+mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  hbg.classList.remove('open'); mm.classList.remove('open'); document.body.style.overflow = '';
+}));
+
+// reveal
+const io = new IntersectionObserver(es => es.forEach(e => { if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);} }), {threshold:.1, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv,.rv-l').forEach(el => io.observe(el));
+
+// counters
+function animCount(el) {
+  const t = +el.dataset.target;
+  const suffix = el.dataset.suffix || '';
+  const dur = 1600;
+  const t0 = performance.now();
+  (function step(now){
+    const p = Math.min((now-t0)/dur,1);
+    const e = 1-Math.pow(1-p,3);
+    el.textContent = Math.round(e*t).toLocaleString('es-AR') + suffix;
+    if(p<1) requestAnimationFrame(step);
+  })(t0);
+}
+const cio = new IntersectionObserver(es => es.forEach(e => {
+  if(e.isIntersecting && e.target.dataset.target){ animCount(e.target); cio.unobserve(e.target); }
+}), {threshold:.6});
+document.querySelectorAll('.count').forEach(el => cio.observe(el));
+</script>
+
+</body>
+</html>
